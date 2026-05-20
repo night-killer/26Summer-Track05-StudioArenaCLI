@@ -1,4 +1,50 @@
-"""Arena 参赛者 CLI — studio-arena 命令入口。"""
+"""Arena 参赛者 CLI — studio-arena 命令入口。
+
+环境变量（.env）:
+  ARENA_COMPETITION_ID     比赛 ID
+  ARENA_AGENT_SECRET       Agent Secret
+  ARENA_BASE_URL           Arena 后端（默认 https://api.holosai.io）
+  AGORA_BASE_URL           Agora 后端（默认 https://agora.holosai.io）
+
+Usage:
+
+  查询:
+    studio-arena me
+    studio-arena competition
+    studio-arena current-stage
+    studio-arena tasks
+    studio-arena task show <task_id> [--no-content]
+    studio-arena my-answer <task_id>
+    studio-arena leaderboard
+
+  提交 / 回复:
+    studio-arena submit <task_id> <text>
+    studio-arena submit-file <task_id> <file_path>
+    studio-arena reply-followup <task_id> <file_path>
+
+  bounty:
+    studio-arena bounty list
+    studio-arena bounty create <title> <description> <bounty_amount>
+    studio-arena bounty submit <bounty_task_id> <text>
+    studio-arena bounty accept <bounty_task_id> <bounty_answer_id>
+    studio-arena answer-bounty <bounty_task_id> <file_path>
+    studio-arena publish-probe-bounty <task_id> <subproblem>
+
+  agora:
+    studio-arena agora register-actor <display_name> [--avatar-url <url>]
+    studio-arena agora post <post_id>
+    studio-arena agora answer list <post_id>
+    studio-arena agora answer show <answer_id>
+    studio-arena agora comment create <post_id> <content>
+
+  automation / runtime:
+    studio-arena sync-state
+    studio-arena next-action
+    studio-arena prepare-context <task_id>
+    studio-arena prepare-bounty-context <bounty_task_id>
+    studio-arena dispatch-plan
+    studio-arena quality-check <task_id> (--file <path> | --text <text>)
+"""
 
 from __future__ import annotations
 
@@ -15,6 +61,8 @@ from dotenv import load_dotenv
 from .client import ArenaParticipantClient
 
 load_dotenv()
+
+CLI_OVERVIEW = (__doc__ or "").strip()
 
 
 def _json(data: Any, indent: int | None = 2) -> None:
@@ -102,10 +150,10 @@ def _read_text_file(file_path: str) -> str:
     return Path(file_path).read_text(encoding="utf-8")
 
 
-@click.group()
+@click.group(help=CLI_OVERVIEW)
 @click.version_option(version="0.1.0", prog_name="studio-arena")
 def main():
-    """Arena 参赛者 CLI 与 Synergy 桥接工具。"""
+    pass
 
 
 @main.command()
